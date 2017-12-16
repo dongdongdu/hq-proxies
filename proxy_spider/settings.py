@@ -65,9 +65,10 @@ ROBOTSTXT_OBEY = False
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.cookies.CookiesMiddleware': 329,
     'proxy_spider.middlewares.ProxyPoolDownloaderMiddleware': 542,
-    'proxy_spider.middlewares.ProxyPoolUserAgentMiddleware': 543
+    'proxy_spider.middlewares.ProxyPoolUserAgentMiddleware': 543,
+    'proxy_spider.middlewares.PhantomJSMiddleware': 800
 }
-
+LOG_LEVEL = 'INFO'
 COOKIES_DEBUG = True
 DOWNLOAD_TIMEOUT = 3
 # RETRY_ENABLED = True

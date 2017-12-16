@@ -110,21 +110,19 @@ class ProxyFetchSpider(Spider):
             logger.debug(vendor)
             callback = getattr(self, vendor['parser'])
             r = Request(url=vendor['url'], callback=callback)
-            # if vendor['parser'] == 'parse_66ip':
-            #     logging.info("request info: %s" % r.headers)
-            #     r.cookies = {
-            #         'yd_cookie': '60805f90-ea52-45dca91d5ae63fbaefca32ddb789ac65835e',
-            #         '_ydclearance': '38237d745e4971b345ebf0b6-be4f-4045-a046-ed8eca9b328c-1513420329'
-            #     }
-            yield r
+            if vendor['parser'] == 'parse_xici':
+                for i in xrange(1, 5):
+                    url = "http://www.xicidaili.com/nn/" + str(i)
+                    yield Request(url=url, callback=self.parse_xici)
+
+            elif vendor['parser'] == 'parse_66ip':
+                r.meta['PhantomJS'] = True
+                yield r
+            else:
+                yield r
 
     def checkin(self, response):
         res = response.body_as_unicode()
-        logging.info("res are====: %s" % res)
-        logging.info("check in method request header are:")
-        logging.info(response.request.headers)
-        logging.info("meta info are:")
-        logging.info(response.request.meta)
 
         if 'startstring' in response.meta and res.startswith(response.meta['startstring']):
             proxy = response.meta['proxy']
