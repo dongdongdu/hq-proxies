@@ -1,4 +1,5 @@
 # Privacy
+.idea
 dbsetting.py
 dbsetting_test.py
 start.sh
