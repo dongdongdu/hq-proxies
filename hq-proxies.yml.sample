@@ -30,16 +30,14 @@ REFRESH_SEC: 86400
 PROXY_VENDORS: 
 - parser: parse_xici
   url: http://www.xicidaili.com/nn/
-#- parser: parse_kxdaili
-#  url: http://www.kxdaili.com/dailiip/1/1.html#ip
-#- parser: parse_ip181
-#  url: http://www.ip181.com/
+- parser: parse_kxdaili
+  url: http://www.kxdaili.com/dailiip/1/1.html#ip
+- parser: parse_ip181
+  url: http://www.ip181.com/
 - parser: parse_66ip
   url: http://www.66ip.cn/nmtq.php?getnum=100&isp=0&anonymoustype=3&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=66ip
-
+  
 # 可以配置多个验证页，会随机抽取一个用于验证
 PROXY_VALIDATORS:
-#- url: http://olbllni9a.bkt.clouddn.com/text/helloworld.txt
-#  startstring: hello world! :)
-- url: http://csr.baidu.com/download/report/list.html
-  startstring: 百度CSR
+- url: http://olbllni9a.bkt.clouddn.com/text/helloworld.txt
+  startstring: hello world! :)

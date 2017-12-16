@@ -124,7 +124,7 @@ class ProxyFetchSpider(Spider):
     def checkin(self, response):
         res = response.body_as_unicode()
 
-        if 'startstring' in response.meta and res.startswith(response.meta['startstring']):
+        if 'startstring' in response.meta and (response.meta['startstring'] in res):
             proxy = response.meta['proxy']
             self.redis_db.sadd(self.PROXY_SET, proxy)
             logger.info(u'可用代理+1  %s' % proxy)
