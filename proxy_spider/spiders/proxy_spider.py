@@ -12,6 +12,8 @@ from scrapy import Spider, Request
 from scrapy.http import HtmlResponse
 from collections import defaultdict
 
+from scrapy.downloadermiddlewares.cookies import CookiesMiddleware
+
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -103,13 +105,27 @@ class ProxyFetchSpider(Spider):
         self.vendors = LOCAL_CONFIG['PROXY_VENDORS']
 
     def start_requests(self):
+
         for vendor in self.vendors:
             logger.debug(vendor)
             callback = getattr(self, vendor['parser'])
-            yield Request(url=vendor['url'], callback=callback)
+            r = Request(url=vendor['url'], callback=callback)
+            # if vendor['parser'] == 'parse_66ip':
+            #     logging.info("request info: %s" % r.headers)
+            #     r.cookies = {
+            #         'yd_cookie': '60805f90-ea52-45dca91d5ae63fbaefca32ddb789ac65835e',
+            #         '_ydclearance': '38237d745e4971b345ebf0b6-be4f-4045-a046-ed8eca9b328c-1513420329'
+            #     }
+            yield r
 
     def checkin(self, response):
         res = response.body_as_unicode()
+        logging.info("res are====: %s" % res)
+        logging.info("check in method request header are:")
+        logging.info(response.request.headers)
+        logging.info("meta info are:")
+        logging.info(response.request.meta)
+
         if 'startstring' in response.meta and res.startswith(response.meta['startstring']):
             proxy = response.meta['proxy']
             self.redis_db.sadd(self.PROXY_SET, proxy)
@@ -121,7 +137,7 @@ class ProxyFetchSpider(Spider):
             yield None
 
     def parse_xici(self, response):
-        ''' 
+        '''
         @url http://www.xicidaili.com/nn/
         '''
         logger.info(u'解析http://www.xicidaili.com/nn/')
@@ -139,9 +155,9 @@ class ProxyFetchSpider(Spider):
             latency = re.match(u'(\d+\.\d+)秒', latency).group(1)
             proxy = '%s://%s:%s' % (proto, ipaddr, port)
             proxies = {proto: '%s:%s' % (ipaddr, port)}
-            if float(latency) > 3:
-                logger.info(u'丢弃慢速代理: %s 延迟%s秒' % (proxy, latency))
-                continue
+            # if float(latency) > 6:
+            #     logger.info(u'丢弃慢速代理: %s 延迟%s秒' % (proxy, latency))
+            #     continue
             logger.info(u'验证: %s' % proxy)
             if not self.redis_db.sismember(self.PROXY_SET, proxy):
                 vaurl, vastart = random.choice(list(self.validator_pool))
@@ -151,7 +167,7 @@ class ProxyFetchSpider(Spider):
                 logger.info(u'该代理已收录..')
 
     def parse_66ip(self, response):
-        ''' 
+        '''
         @url http://www.66ip.cn/nmtq.php?getnum=100&isp=0&anonymoustype=3&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=66ip
         '''
         logger.info(u'开始爬取66ip')
@@ -170,7 +186,7 @@ class ProxyFetchSpider(Spider):
                 logger.info(u'该代理已收录..')
 
     def parse_ip181(self, response):
-        ''' 
+        '''
         @url http://www.ip181.com/
         '''
         logger.info(u'开始爬取ip181')
@@ -193,7 +209,7 @@ class ProxyFetchSpider(Spider):
                 logger.info(u'该代理已收录..')
 
     def parse_kxdaili(self, response):
-        ''' 
+        '''
         @url http://www.kxdaili.com/dailiip/1/1.html#ip
         '''
         logger.info(u'开始爬取kxdaili')

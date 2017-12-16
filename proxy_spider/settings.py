@@ -60,13 +60,19 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
+# 'scrapy.downloadermiddlewares.retry.RetryMiddleware': 351,
+
 DOWNLOADER_MIDDLEWARES = {
-    'scrapy.downloadermiddlewares.retry.RetryMiddleware': 351,
+    'scrapy.downloadermiddlewares.cookies.CookiesMiddleware': 329,
     'proxy_spider.middlewares.ProxyPoolDownloaderMiddleware': 542,
-    'proxy_spider.middlewares.ProxyPoolUserAgentMiddleware': 543,
+    'proxy_spider.middlewares.ProxyPoolUserAgentMiddleware': 543
 }
+
+COOKIES_DEBUG = True
 DOWNLOAD_TIMEOUT = 3
-RETRY_ENABLED = False
+# RETRY_ENABLED = True
+# RETRY_TIMES = 2
+# RETRY_HTTP_CODES = [500, 501, 521, 502, 503, 504, 408]
 
 # DUPEFILTER_CLASS = 'proxy_spider.'
 DUPEFILTER_DEBUG = True
