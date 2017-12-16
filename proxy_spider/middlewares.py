@@ -99,4 +99,6 @@ class PhantomJSMiddleware(object):
             js = js.replace('<html><head></head><body><script language="javascript"> ', '')
             driver.execute_script(js)
             driver.refresh()
-            return HtmlResponse(request.url, encoding='utf-8', body=driver.page_source, request=request)
+            html = HtmlResponse(request.url, encoding='utf-8', body=driver.page_source, request=request)
+            driver.quit()
+            return html
