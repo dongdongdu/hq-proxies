@@ -148,7 +148,7 @@ class ProxyFetchSpider(Spider):
                 continue
             ipaddr = td_list[0].extract()
             port = td_list[1].extract()
-            proto = td_list[5].extract()
+            proto = td_list[5].extract().lower()
             latency = tr.css('div.bar::attr(title)').extract_first()
             latency = re.match(u'(\d+\.\d+)秒', latency).group(1)
             proxy = '%s://%s:%s' % (proto, ipaddr, port)
